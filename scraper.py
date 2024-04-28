@@ -34,17 +34,46 @@ def max_page(url_):
 
 
 #input conditions
-
-cond_1 = True
-
-while cond_1 == True:
+cond_1 = False
+cond_2 = False
+cond_3 = False
+while not (cond_1 and cond_2 and cond_3):
     print("max page on website is: 141")
-    pages_ = input("how many pages would you like to scrap?: ")
-    int_pages = int(pages_)
-    if int_pages > 141 or int_pages < 1:
-        print ("Incorrect number of pages add proper number")
+    pages_ = input("\nhow many pages would you like to scrap?: ")
+    try:
+        int_pages = int(pages_)
+        if int_pages < 141 and int_pages > 0:
+            cond_1 = True
+        else:
+            print("Incorrect number of pages add proper number")
+
+    except ValueError:
+        print("enter a valid number for pages.")
+
+    #update every few mins
+    upd = input("\nwould you like the data to be updated every few minutes?(y/n): ")
+    upd_bool = None
+    if upd == "y":
+        upd_bool = True
+        cond_2 = True
+    elif upd == "n":
+        upd_bool = False
+        break
     else:
-         cond_1 == False
+        print("incorrect enter a valid letter")
+
+    #time interval
+    minutes = input("\nhow many minutes should pass?: ")
+    try:
+        int_min = int(minutes)
+        if int_min >= 0:
+            cond_3 = True
+        else:
+            print("incorrect amount of minutes")
+
+    except ValueError:
+        print("enter a valid number for minutes")
+
 
 
 def main_scrape(url_):
@@ -72,8 +101,8 @@ def main_scrape(url_):
 
 
 
-if __name__ == 'scraper':
-     while True:
+if __name__ == '__main__':
+     while upd_bool is True:
           tb_data = main_scrape(url)
           main_tb = pd.concat(tb_data)
 
@@ -81,8 +110,16 @@ if __name__ == 'scraper':
           main_tb.drop(main_tb.columns[[0, -1]], axis=1, inplace=True)
 
           print(tb_data)
-          wait = 5 #change to input  so user can say how many seconds/minutes he wants
+          wait = minutes #change to input  so user can say how many seconds/minutes he wants
           print(f"updating after {wait} seconds")
 
           time.sleep(wait*60)
-     
+
+     else:
+          tb_data = main_scrape(url)
+          main_tb = pd.concat(tb_data)
+
+          # Remove the first and last columns
+          main_tb.drop(main_tb.columns[[0, -1]], axis=1, inplace=True)
+
+          print(tb_data)
