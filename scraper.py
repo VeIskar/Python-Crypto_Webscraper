@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import time
 import pandas as pd
+import os
 
 
 
@@ -74,6 +75,20 @@ while not (cond_1 and cond_2 and cond_3):
     except ValueError:
         print("enter a valid number for minutes")
 
+#saving the data
+def save_data(data):
+    if not os.path.exists('stored_d'):
+        os.makedirs('stored_d')
+
+    timestamp = time.strftime("%Y%m%d%H%M")
+    filename = f'stored_d/crypto_{timestamp}'
+
+    csv_filename = f'{filename}.csv'
+    excel_filename = f'{filename}.xlsx'
+    
+    data.to_csv(csv_filename, index=False) #saving data to csv
+    data.to_excel(excel_filename, index=False) #saving data to excel file
+    print(f"Scraped data saved to {filename}")
 
 
 def main_scrape(url_):
@@ -111,8 +126,10 @@ if __name__ == '__main__':
 
           print(tb_data)
           wait = minutes #change to input  so user can say how many seconds/minutes he wants
-          print(f"updating after {wait} seconds")
 
+          save_data(main_tb) #save data into csv and excel
+
+          print(f"updating after {wait} seconds")
           time.sleep(wait*60)
 
      else:
@@ -123,3 +140,4 @@ if __name__ == '__main__':
           main_tb.drop(main_tb.columns[[0, -1]], axis=1, inplace=True)
 
           print(tb_data)
+          save_data(main_tb)
