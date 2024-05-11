@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import time
 import pandas as pd
 import os
+import shutil
 
 
 
@@ -77,17 +78,28 @@ while not (cond_1 and cond_2 and cond_3):
 
 #saving the data
 def save_data(data):
-    if not os.path.exists('stored_d'):
-        os.makedirs('stored_d')
+    cwd = os.getcwd() #getting current dir
+
+    s_d_path = os.path.join(cwd, 'stored_d')
+
+    if not os.path.exists(s_d_path):
+        os.makedirs(s_d_path)
+    else:
+        print("folder exists saving...")
+    
 
     timestamp = time.strftime("%Y%m%d%H%M")
-    filename = f'stored_d/crypto_{timestamp}'
+    filename = f'crypto_{timestamp}'
 
     csv_filename = f'{filename}.csv'
-    excel_filename = f'{filename}.xlsx'
+    #excel_filename = f'{filename}.xlsx'
+
     
     data.to_csv(csv_filename, index=False) #saving data to csv
-    data.to_excel(excel_filename, index=False) #saving data to excel file
+   # data.to_excel(excel_filename, index=False)
+
+    shutil.move(csv_filename,s_d_path)
+
     print(f"Scraped data saved to {filename}")
 
 
